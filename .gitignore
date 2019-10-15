@@ -5,6 +5,7 @@
 *.so
 *.dylib
 bokhald
+bok
 
 # Test binary, build with `go test -c`
 *.test
