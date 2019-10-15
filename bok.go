@@ -17,7 +17,7 @@ var (
 	addDate        = appAdd.Arg("date", "The date of the bill, receip or expense. Format: yyyy-mm-dd").Required().String()
 	addAmount      = appAdd.Arg("amount", "The amount of money. Format: x,yy").Required().String()
 	addDescription = appAdd.Arg("description", "A brief description or key-word").Required().String()
-	addFile        = appAdd.Arg("file", "The accounting file to use").Default("account.csv").String()
+	addFile        = appAdd.Arg("file", "The accounting file to use").Default("account.json").String()
 
 	// TODO remove
 
@@ -32,6 +32,8 @@ func configureCliArgs() {
 }
 
 func configureLogging() {
+	sigolo.FormatFunctions[sigolo.LOG_INFO] = sigolo.FormatFunctions[sigolo.LOG_PLAIN]
+
 	if *appDebug {
 		sigolo.LogLevel = sigolo.LOG_DEBUG
 	} else {
