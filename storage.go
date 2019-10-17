@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"path"
 	"time"
 
 	"github.com/hauke96/sigolo"
@@ -49,10 +50,16 @@ func ReadStore(path string) *Store {
 	return &store
 }
 
-func SaveStore(path string, store *Store) {
-	file, err := json.MarshalIndent(*store, "", "\t")
+func SaveStore(pathString string, store *Store) {
+	storeByteData, err := json.MarshalIndent(*store, "", "\t")
 	sigolo.FatalCheck(err)
 
-	err = ioutil.WriteFile(path, file, 0644)
+	// Write copy with time stamp
+	dir, _ := path.Split(pathString)
+	err = ioutil.WriteFile(dir+"_"+time.Now().Format("2006-01-02")+".json", storeByteData, 0644)
+	sigolo.FatalCheck(err)
+
+	// (Over) write actual store
+	err = ioutil.WriteFile(pathString, storeByteData, 0644)
 	sigolo.FatalCheck(err)
 }
