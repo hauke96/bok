@@ -14,12 +14,12 @@ const VERSION string = "v0.0.1"
 var (
 	app      = kingpin.New("bokhald", "A simple accounting tool")
 	appDebug = app.Flag("verbose", "Verbose mode, showing additional debug information").Short('v').Bool()
+	appFile  = app.Flag("file", "The accounting file to use").Default("account.json").String()
 
 	appAdd         = app.Command("add", "Adds a new entry")
 	addDate        = appAdd.Arg("date", "The date of the bill, receip or expense. Format: yyyy-mm-dd").Required().String()
 	addAmount      = appAdd.Arg("amount", "The amount of money. Format: x,yy").Required().String()
 	addDescription = appAdd.Arg("description", "A brief description or key-word").Required().String()
-	addFile        = appAdd.Arg("file", "The accounting file to use").Default("account.json").String()
 
 	// TODO remove
 
@@ -55,7 +55,7 @@ func main() {
 
 	switch cmd {
 	case appAdd.FullCommand():
-		sigolo.Debug("Use account file '%s'", *addFile)
+		sigolo.Debug("Use account file '%s'", *appFile)
 		// TODO add entry
 	}
 
