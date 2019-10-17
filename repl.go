@@ -19,10 +19,9 @@ func RunRepl(store *Store) {
 	for scanner.Scan() {
 		cmd = scanner.Text()
 
-		if cmd == "q" || cmd == "quit" || cmd == "exit" {
-			break
-		}
 		switch cmd {
+		case "q", "quit", "exit":
+			goto ReplEnd
 		case "add", "a":
 			err := replAddEntry(scanner, store)
 			if err != nil {
@@ -36,6 +35,8 @@ func RunRepl(store *Store) {
 
 		fmt.Print("> ")
 	}
+
+ReplEnd:
 
 	if err := scanner.Err(); err != nil {
 		sigolo.Fatal("Error reading standard input: ", err.Error())
