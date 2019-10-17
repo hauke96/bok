@@ -12,25 +12,28 @@ import (
 )
 
 func RunRepl(store *Store) {
-	var cmd string
 	scanner := bufio.NewScanner(os.Stdin)
 
 	fmt.Print("> ")
 	for scanner.Scan() {
-		cmd = scanner.Text()
+		input := scanner.Text()
 
-		switch cmd {
-		case "q", "quit", "exit":
-			goto ReplEnd
-		case "add", "a":
-			err := replAddEntry(scanner, store)
-			if err != nil {
-				sigolo.Info("Error adding entry: " + err.Error())
+		for pos, cmd := range input {
+			switch cmd {
+			case 'q':
+				sigolo.Info("Bye")
+				goto ReplEnd
+			case 'a':
+				err := replAddEntry(scanner, store)
+				if err != nil {
+					sigolo.Info("Error adding entry: " + err.Error())
+				}
+			case 'w':
+				store.SaveStore()
+				sigolo.Info("Saved")
+			default:
+				sigolo.Info("Unknown command '%c' at pos %d", cmd, pos)
 			}
-		case "write", "w":
-			store.SaveStore()
-		default:
-			sigolo.Info("Unknown command '%s'", cmd)
 		}
 
 		fmt.Print("> ")
