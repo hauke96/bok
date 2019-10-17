@@ -39,7 +39,7 @@ func (s *Store) SaveStore() {
 
 	// Write copy with time stamp
 	dir, file := path.Split(s.Path)
-	err = ioutil.WriteFile(dir+time.Now().Format("2006-01-02")+"_"+file, storeByteData, 0644)
+	err = ioutil.WriteFile(dir+time.Now().Format("2006-01-02_15:04:05")+"_"+file, storeByteData, 0644)
 	sigolo.FatalCheck(err)
 
 	// (Over) write actual store
