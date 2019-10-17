@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/hauke96/sigolo"
@@ -39,7 +41,8 @@ func (s *Store) SaveStore() {
 
 	// Write copy with time stamp
 	dir, file := path.Split(s.Path)
-	err = ioutil.WriteFile(dir+time.Now().Format("2006-01-02_15:04:05")+"_"+file, storeByteData, 0644)
+	fileName := strings.TrimSuffix(file, filepath.Ext(file))
+	err = ioutil.WriteFile(dir+fileName+"_"+time.Now().Format("2006-01-02_15:04:05")+".json", storeByteData, 0644)
 	sigolo.FatalCheck(err)
 
 	// (Over) write actual store
