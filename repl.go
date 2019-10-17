@@ -4,11 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/hauke96/sigolo"
 )
 
-func RunRepl() {
+func RunRepl(store *Store) {
 	var cmd string
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -21,7 +24,10 @@ func RunRepl() {
 		}
 		switch cmd {
 		case "add", "a":
-			replAddEntry(scanner)
+			err := replAddEntry(scanner, store)
+			if err != nil {
+				sigolo.Info("Error adding entry: " + err.Error())
+			}
 		default:
 			sigolo.Info("Unknown command '%s'", cmd)
 		}
@@ -34,26 +40,41 @@ func RunRepl() {
 	}
 }
 
-func replAddEntry(scanner *bufio.Scanner) {
-	var date string
-	var amount string
+func replAddEntry(scanner *bufio.Scanner, store *Store) error {
+	var dateString string
+	var amountString string
 	var description string
 
 	sigolo.Info("Add new entry:")
 
 	fmt.Print("  Date: ")
 	scanner.Scan()
-	date = scanner.Text()
+	dateString = scanner.Text()
 
 	fmt.Print("  Amount: ")
 	scanner.Scan()
-	amount = scanner.Text()
+	amountString = scanner.Text()
 
 	fmt.Print("  Description: ")
 	scanner.Scan()
 	description = scanner.Text()
 
-	// TODO addEntry(date, amount, description)
+	// Convert strings to right type
 
-	sigolo.Debug("Added entry [%s, %s, '%s']", date, amount, description)
+	amountString = strings.ReplaceAll(amountString, ",", ".")
+	amountFloat, err := strconv.ParseFloat(amountString, 64)
+	if err != nil {
+		return err
+	}
+
+	amount := int(amountFloat * 100.0)
+
+	date, err := time.Parse("2006-01-02", dateString)
+	if err != nil {
+		return err
+	}
+
+	store.AddEntry(amount, description, date)
+
+	return nil
 }

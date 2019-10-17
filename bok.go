@@ -58,5 +58,5 @@ func main() {
 		// TODO add entry
 	}
 
-	RunRepl()
+	RunRepl(store)
 }
