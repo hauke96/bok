@@ -38,8 +38,6 @@ func configureLogging() {
 
 	if *appDebug {
 		sigolo.LogLevel = sigolo.LOG_DEBUG
-	} else {
-		sigolo.LogLevel = sigolo.LOG_PLAIN
 	}
 }
 
