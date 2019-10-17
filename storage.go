@@ -33,6 +33,20 @@ func (s *Store) AddEntry(amount int, description string, date time.Time) {
 	sigolo.Debug("Added entry [%s, %s, '%s']", amount, description, date)
 }
 
+func (s *Store) SaveStore() {
+	storeByteData, err := json.MarshalIndent(*s, "", "\t")
+	sigolo.FatalCheck(err)
+
+	// Write copy with time stamp
+	dir, file := path.Split(s.Path)
+	err = ioutil.WriteFile(dir+time.Now().Format("2006-01-02")+"_"+file, storeByteData, 0644)
+	sigolo.FatalCheck(err)
+
+	// (Over) write actual store
+	err = ioutil.WriteFile(s.Path, storeByteData, 0644)
+	sigolo.FatalCheck(err)
+}
+
 func ReadStore(path string) *Store {
 	var store Store
 
@@ -48,18 +62,4 @@ func ReadStore(path string) *Store {
 	}
 
 	return &store
-}
-
-func SaveStore(pathString string, store *Store) {
-	storeByteData, err := json.MarshalIndent(*store, "", "\t")
-	sigolo.FatalCheck(err)
-
-	// Write copy with time stamp
-	dir, _ := path.Split(pathString)
-	err = ioutil.WriteFile(dir+"_"+time.Now().Format("2006-01-02")+".json", storeByteData, 0644)
-	sigolo.FatalCheck(err)
-
-	// (Over) write actual store
-	err = ioutil.WriteFile(pathString, storeByteData, 0644)
-	sigolo.FatalCheck(err)
 }

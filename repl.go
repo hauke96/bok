@@ -28,6 +28,8 @@ func RunRepl(store *Store) {
 			if err != nil {
 				sigolo.Info("Error adding entry: " + err.Error())
 			}
+		case "write", "w":
+			store.SaveStore()
 		default:
 			sigolo.Info("Unknown command '%s'", cmd)
 		}
