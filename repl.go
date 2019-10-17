@@ -33,3 +33,27 @@ func RunRepl() {
 		sigolo.Fatal("Error reading standard input: ", err.Error())
 	}
 }
+
+func replAddEntry(scanner *bufio.Scanner) {
+	var date string
+	var amount string
+	var description string
+
+	sigolo.Info("Add new entry:")
+
+	fmt.Print("  Date: ")
+	scanner.Scan()
+	date = scanner.Text()
+
+	fmt.Print("  Amount: ")
+	scanner.Scan()
+	amount = scanner.Text()
+
+	fmt.Print("  Description: ")
+	scanner.Scan()
+	description = scanner.Text()
+
+	// TODO addEntry(date, amount, description)
+
+	sigolo.Debug("Added entry [%s, %s, '%s']", date, amount, description)
+}
