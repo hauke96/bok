@@ -51,10 +51,10 @@ func (s *Store) SaveStore() {
 }
 
 func ReadStore(path string) *Store {
-	var store Store
-
-	store.Path = path
-	store.Entries = make([]*Entry, 0)
+	var store = &Store{
+		Path:    path,
+		Entries: make([]*Entry, 0),
+	}
 
 	// Return empty store if given file does not exist
 	if _, err := os.Stat(path); !os.IsNotExist(err) {
@@ -64,5 +64,5 @@ func ReadStore(path string) *Store {
 		json.Unmarshal(file, &store)
 	}
 
-	return &store
+	return store
 }
