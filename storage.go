@@ -11,8 +11,8 @@ import (
 )
 
 type Store struct {
-	Path    string
-	Entries []*Entry
+	Path    string   `json:"-"`
+	Entries []*Entry `json:"entries"`
 }
 
 type Entry struct {
