@@ -62,30 +62,6 @@ func main() {
 	RunRepl()
 }
 
-func RunRepl() {
-	var cmd string
-	scanner := bufio.NewScanner(os.Stdin)
-
-	fmt.Print("> ")
-	for scanner.Scan() {
-		cmd = scanner.Text()
-
-		if cmd == "q" || cmd == "quit" || cmd == "exit" {
-			break
-		}
-		switch cmd {
-		case "add", "a":
-			replAddEntry(scanner)
-		}
-
-		fmt.Print("> ")
-	}
-
-	if err := scanner.Err(); err != nil {
-		sigolo.Fatal("Error reading standard input: ", err.Error())
-	}
-}
-
 func replAddEntry(scanner *bufio.Scanner) {
 	var date string
 	var amount string
