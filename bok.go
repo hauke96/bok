@@ -51,7 +51,10 @@ func main() {
 
 	configureLogging()
 
+	store := ReadStore(*appFile)
+
 	sigolo.Info("Welcome to bokhald")
+	sigolo.Debug("Read store: %v", store)
 
 	switch cmd {
 	case appAdd.FullCommand():

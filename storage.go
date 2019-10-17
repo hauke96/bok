@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/hauke96/sigolo"
 )
 
 type Store struct {
+	Path    string
 	Entries []*Entry
 }
 
@@ -19,11 +21,18 @@ type Entry struct {
 }
 
 func ReadStore(path string) *Store {
-	file, err := ioutil.ReadFile(path)
-	sigolo.FatalCheck(err)
-
 	var store Store
-	json.Unmarshal(file, &store)
+
+	store.Path = path
+	store.Entries = make([]*Entry, 0)
+
+	// Return empty store if given file does not exist
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		file, err := ioutil.ReadFile(path)
+		sigolo.FatalCheck(err)
+
+		json.Unmarshal(file, &store)
+	}
 
 	return &store
 }
