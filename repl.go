@@ -11,6 +11,7 @@ import (
 	"github.com/hauke96/sigolo"
 )
 
+// RunRepl starts the read-eval-print loop
 func RunRepl(store *Store) {
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -18,6 +19,7 @@ func RunRepl(store *Store) {
 	for scanner.Scan() {
 		input := scanner.Text()
 
+		// When the user enters more than one character
 		for i := 0; i < len(input); i++ {
 			cmd := input[i]
 
@@ -28,23 +30,24 @@ func RunRepl(store *Store) {
 				i++
 			}
 
+			// Evalualte the command
 			switch cmd {
-			case 'q':
+			case 'q': // -> quit
 				if !store.Dirty || store.Dirty && force {
 					sigolo.Info("Bye")
-					goto ReplEnd
+					goto ReplEnd // out of both loops
 				} else {
 					sigolo.Info("There are unsaved changes, please save wit 'w' before exiting.")
 				}
-			case 'a':
+			case 'a': // -> add
 				err := replAddEntry(scanner, store)
 				if err != nil {
 					sigolo.Info("Error adding entry: " + err.Error())
 				}
-			case 'w':
+			case 'w': // -> write to disk
 				store.SaveStore()
 				sigolo.Info("Saved")
-			default:
+			default: // -> unknown command
 				sigolo.Info("Unknown command '%c' at pos %d", cmd, i)
 			}
 		}
@@ -59,6 +62,8 @@ ReplEnd:
 	}
 }
 
+// replAddEntry starts is own little REPL by asking the user for the necessary
+// data to add an accounting entry.
 func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	var dateString string
 	var amountString string
@@ -93,6 +98,7 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 
 	amount := int(amountFloat * 100.0)
 
+	// Currently only the "yyyy-mm-dd" format is supported
 	date, err := time.Parse("2006-01-02", dateString)
 	if err != nil {
 		return err

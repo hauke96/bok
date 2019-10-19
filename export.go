@@ -9,6 +9,8 @@ import (
 	"github.com/hauke96/sigolo"
 )
 
+// export evaluates the export parameters (e.g. format) and calls the function
+// that actually creates the data format and writes it.
 func export(store *Store, format string, fileWithoutExtension string) error {
 	var err error
 	var file string
@@ -32,6 +34,7 @@ func export(store *Store, format string, fileWithoutExtension string) error {
 	return nil
 }
 
+// exportToCSV create and saves the stores data in the CSV format.
 func exportToCSV(store *Store, file string) error {
 	var buf bytes.Buffer
 

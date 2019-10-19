@@ -14,7 +14,7 @@ import (
 
 type Store struct {
 	Path    string   `json:"-"`
-	Dirty   bool     `json:"-"` // "true" when changes happened that are not stored to disk
+	Dirty   bool     `json:"-"` // "true" when entry set changed since last save
 	Entries []*Entry `json:"entries"`
 }
 
@@ -25,6 +25,8 @@ type Entry struct {
 	Category string    `json:"category"`
 }
 
+// AddEntry will add an entry to the stores list of entries. It also sets the
+// dirty-flag to "true".
 func (s *Store) AddEntry(amount int, date time.Time, description string, category string) {
 	var e Entry
 
@@ -36,9 +38,11 @@ func (s *Store) AddEntry(amount int, date time.Time, description string, categor
 	s.Entries = append(s.Entries, &e)
 	s.Dirty = true
 
-	sigolo.Debug("Added entry [%s, %s, '%s', '%s']", amount, date, description, category)
+	sigolo.Debug("Added entry [%d, %s, '%s', '%s']", amount, date, description, category)
 }
 
+// SaveStore will save the store to its location on disk. This will also set the
+// dirty-flag back to "false".
 func (s *Store) SaveStore() {
 	storeByteData, err := json.MarshalIndent(*s, "", "\t")
 	sigolo.FatalCheck(err)
@@ -56,6 +60,7 @@ func (s *Store) SaveStore() {
 	s.Dirty = false
 }
 
+// ReadStore reads the store from disk.
 func ReadStore(path string) *Store {
 	var store = &Store{
 		Path:    path,

@@ -41,6 +41,7 @@ func customErrorLog(writer *os.File, time, level string, maxLength int, caller, 
 }
 
 func main() {
+	// init
 	configureCliArgs()
 
 	cmd, err := app.Parse(os.Args[1:])
@@ -48,9 +49,11 @@ func main() {
 
 	configureLogging()
 
+	// read store
 	store := ReadStore(*appFile)
 	sigolo.Debug("Read store: %v", store)
 
+	// evaluate what command to execute or to start the REPL
 	switch cmd {
 	case appExport.FullCommand():
 		err := export(store, *appExportFormat, *appExportOutput)
