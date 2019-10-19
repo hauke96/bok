@@ -50,6 +50,7 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	var dateString string
 	var amountString string
 	var description string
+	var category string
 
 	sigolo.Info("Add new entry:")
 
@@ -64,6 +65,10 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	fmt.Print("  Description: ")
 	scanner.Scan()
 	description = scanner.Text()
+
+	fmt.Print("  Category: ")
+	scanner.Scan()
+	category = scanner.Text()
 
 	// Convert strings to right type
 
@@ -80,7 +85,7 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 		return err
 	}
 
-	store.AddEntry(amount, description, date)
+	store.AddEntry(amount, date, description, category)
 
 	return nil
 }

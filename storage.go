@@ -18,21 +18,23 @@ type Store struct {
 }
 
 type Entry struct {
-	Amount int       `json:"amount"`
-	Note   string    `json:"note"`
-	Date   time.Time `json:"date"`
+	Amount   int       `json:"amount"`
+	Date     time.Time `json:"date"`
+	Note     string    `json:"note"`
+	Category string    `json:"category"`
 }
 
-func (s *Store) AddEntry(amount int, description string, date time.Time) {
+func (s *Store) AddEntry(amount int, date time.Time, description string, category string) {
 	var e Entry
 
 	e.Amount = amount
 	e.Note = description
 	e.Date = date
+	e.Category = category
 
 	s.Entries = append(s.Entries, &e)
 
-	sigolo.Debug("Added entry [%s, %s, '%s']", amount, description, date)
+	sigolo.Debug("Added entry [%s, %s, '%s', '%s']", amount, date, description, category)
 }
 
 func (s *Store) SaveStore() {
