@@ -15,8 +15,8 @@ var (
 	appFile  = app.Flag("file", "The accounting file to use").Default("account.json").String()
 
 	appExport       = app.Command("export", "Exports the store to a different format")
-	appExportFormat = app.Arg("format", "This is the format the accounting data gets converted to. Supported formats: csv").Default("csv").String()
-	appExportOutput = app.Arg("output", "The output file (without extension)").Default("account_export").String()
+	appExportFormat = appExport.Flag("format", "This is the format the accounting data gets converted to. Supported formats: csv").Default("csv").String()
+	appExportOutput = appExport.Flag("output", "The output file (without extension)").Default("account_export").String()
 )
 
 func configureCliArgs() {
@@ -49,8 +49,8 @@ func main() {
 
 	switch cmd {
 	case appExport.FullCommand():
-		sigolo.Fatal("Not implemented yet")
+		exportToCSV(store, *appExportOutput+".csv")
+	default:
+		RunRepl(store)
 	}
-
-	RunRepl(store)
 }
