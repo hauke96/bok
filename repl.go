@@ -18,10 +18,19 @@ func RunRepl(store *Store) {
 	for scanner.Scan() {
 		input := scanner.Text()
 
-		for pos, cmd := range input {
+		for i := 0; i < len(input); i++ {
+			cmd := input[i]
+
+			// commands can be forced by typing "!" after the command
+			force := false
+			if i+1 < len(input) && input[i+1] == '!' {
+				force = true
+				i++
+			}
+
 			switch cmd {
 			case 'q':
-				if !store.Dirty {
+				if !store.Dirty || store.Dirty && force {
 					sigolo.Info("Bye")
 					goto ReplEnd
 				} else {
@@ -36,7 +45,7 @@ func RunRepl(store *Store) {
 				store.SaveStore()
 				sigolo.Info("Saved")
 			default:
-				sigolo.Info("Unknown command '%c' at pos %d", cmd, pos)
+				sigolo.Info("Unknown command '%c' at pos %d", cmd, i)
 			}
 		}
 
