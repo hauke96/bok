@@ -11,7 +11,7 @@ import (
 const VERSION string = "v0.0.1"
 
 var (
-	app      = kingpin.New("bokhald", "A simple accounting tool")
+	app      = kingpin.New("bok", "A simple accounting tool")
 	appDebug = app.Flag("verbose", "Verbose mode, showing additional debug information").Short('v').Bool()
 	appFile  = app.Flag("file", "The accounting file to use").Default("account.json").String()
 
@@ -58,7 +58,7 @@ func main() {
 			sigolo.Error(err.Error())
 		}
 	default:
-		sigolo.Info("Welcome to bokhald")
+		sigolo.Info("Welcome to bok")
 		RunRepl(store)
 	}
 }
