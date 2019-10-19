@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/hauke96/kingpin"
@@ -28,10 +29,15 @@ func configureCliArgs() {
 
 func configureLogging() {
 	sigolo.FormatFunctions[sigolo.LOG_INFO] = sigolo.FormatFunctions[sigolo.LOG_PLAIN]
+	sigolo.FormatFunctions[sigolo.LOG_ERROR] = customErrorLog
 
 	if *appDebug {
 		sigolo.LogLevel = sigolo.LOG_DEBUG
 	}
+}
+
+func customErrorLog(writer *os.File, time, level string, maxLength int, caller, message string) {
+	fmt.Fprintf(writer, "ERROR: %s\n", message)
 }
 
 func main() {
