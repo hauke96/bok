@@ -14,14 +14,9 @@ var (
 	appDebug = app.Flag("verbose", "Verbose mode, showing additional debug information").Short('v').Bool()
 	appFile  = app.Flag("file", "The accounting file to use").Default("account.json").String()
 
-	appAdd         = app.Command("add", "Adds a new entry")
-	addDate        = appAdd.Arg("date", "The date of the bill, receip or expense. Format: yyyy-mm-dd").Required().String()
-	addAmount      = appAdd.Arg("amount", "The amount of money. Format: x,yy").Required().String()
-	addDescription = appAdd.Arg("description", "A brief description or key-word").Required().String()
-
-	// TODO remove
-
-	// TODO edit
+	appExport       = app.Command("export", "Exports the store to a different format")
+	appExportFormat = app.Arg("format", "This is the format the accounting data gets converted to. Supported formats: csv").Default("csv").String()
+	appExportOutput = app.Arg("output", "The output file (without extension)").Default("account_export").String()
 )
 
 func configureCliArgs() {
@@ -53,9 +48,8 @@ func main() {
 	sigolo.Debug("Read store: %v", store)
 
 	switch cmd {
-	case appAdd.FullCommand():
-		sigolo.Debug("Use account file '%s'", *appFile)
-		// TODO add entry
+	case appExport.FullCommand():
+		sigolo.Fatal("Not implemented yet")
 	}
 
 	RunRepl(store)
