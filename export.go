@@ -2,13 +2,37 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 
 	"github.com/hauke96/sigolo"
 )
 
-func exportToCSV(store *Store, file string) {
+func export(store *Store, format string, fileWithoutExtension string) error {
+	var err error
+	var file string
+
+	switch format {
+	case "csv":
+		file = fileWithoutExtension + ".csv"
+		err = exportToCSV(store, file)
+	default:
+		err = errors.New(fmt.Sprintf("Unsupported format '%s'", format))
+	}
+
+	if err != nil {
+		return err
+	}
+
+	sigolo.Info("Exporting finished succesfully")
+	sigolo.Info("  Format: %s", format)
+	sigolo.Info("  File: %s", file)
+
+	return nil
+}
+
+func exportToCSV(store *Store, file string) error {
 	var buf bytes.Buffer
 
 	for _, e := range store.Entries {
@@ -20,5 +44,9 @@ func exportToCSV(store *Store, file string) {
 	}
 
 	err := ioutil.WriteFile(file, buf.Bytes(), 0644)
-	sigolo.FatalCheck(err)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -49,14 +49,16 @@ func main() {
 	configureLogging()
 
 	store := ReadStore(*appFile)
-
-	sigolo.Info("Welcome to bokhald")
 	sigolo.Debug("Read store: %v", store)
 
 	switch cmd {
 	case appExport.FullCommand():
-		exportToCSV(store, *appExportOutput+".csv")
+		err := export(store, *appExportFormat, *appExportOutput)
+		if err != nil {
+			sigolo.Error(err.Error())
+		}
 	default:
+		sigolo.Info("Welcome to bokhald")
 		RunRepl(store)
 	}
 }
