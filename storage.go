@@ -14,6 +14,7 @@ import (
 
 type Store struct {
 	Path    string   `json:"-"`
+	Dirty   bool     `json:"-"` // "true" when changes happened that are not stored to disk
 	Entries []*Entry `json:"entries"`
 }
 
@@ -33,6 +34,7 @@ func (s *Store) AddEntry(amount int, date time.Time, description string, categor
 	e.Category = category
 
 	s.Entries = append(s.Entries, &e)
+	s.Dirty = true
 
 	sigolo.Debug("Added entry [%s, %s, '%s', '%s']", amount, date, description, category)
 }
@@ -50,6 +52,8 @@ func (s *Store) SaveStore() {
 	// (Over) write actual store
 	err = ioutil.WriteFile(s.Path, storeByteData, 0644)
 	sigolo.FatalCheck(err)
+
+	s.Dirty = false
 }
 
 func ReadStore(path string) *Store {
@@ -65,6 +69,8 @@ func ReadStore(path string) *Store {
 
 		json.Unmarshal(file, &store)
 	}
+
+	store.Dirty = false
 
 	return store
 }

@@ -21,8 +21,12 @@ func RunRepl(store *Store) {
 		for pos, cmd := range input {
 			switch cmd {
 			case 'q':
-				sigolo.Info("Bye")
-				goto ReplEnd
+				if !store.Dirty {
+					sigolo.Info("Bye")
+					goto ReplEnd
+				} else {
+					sigolo.Info("There are unsaved changes, please save wit 'w' before exiting.")
+				}
 			case 'a':
 				err := replAddEntry(scanner, store)
 				if err != nil {
