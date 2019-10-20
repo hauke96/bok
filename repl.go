@@ -69,24 +69,46 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	var amountString string
 	var description string
 	var category string
+	var lastEntry *Entry
+	if len(store.Entries) != 0 {
+		lastEntry = store.Entries[len(store.Entries)-1]
+	}
 
 	sigolo.Info("Add new entry:")
+
+	// TODO Maybe reuse a lot of code here
 
 	fmt.Print("  Date: ")
 	scanner.Scan()
 	dateString = scanner.Text()
+	if lastEntry != nil && len(dateString) == 0 {
+		dateString = lastEntry.Date.Format("2006-01-02")
+		sigolo.Info("    (%s)", dateString)
+	}
 
 	fmt.Print("  Amount: ")
 	scanner.Scan()
 	amountString = scanner.Text()
+	if lastEntry != nil && len(amountString) == 0 {
+		amountString = fmt.Sprintf("\"%d.%d\",", lastEntry.Amount/100, lastEntry.Amount%100)
+		sigolo.Info("    (%s)", amountString)
+	}
 
 	fmt.Print("  Description: ")
 	scanner.Scan()
 	description = scanner.Text()
+	if lastEntry != nil && len(description) == 0 {
+		description = lastEntry.Note
+		sigolo.Info("    (%s)", description)
+	}
 
 	fmt.Print("  Category: ")
 	scanner.Scan()
 	category = scanner.Text()
+	if lastEntry != nil && len(category) == 0 {
+		category = lastEntry.Category
+		sigolo.Info("    (%s)", category)
+	}
 
 	// Convert strings to right type
 
