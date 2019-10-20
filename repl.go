@@ -90,7 +90,7 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	scanner.Scan()
 	amountString = scanner.Text()
 	if lastEntry != nil && len(amountString) == 0 {
-		amountString = fmt.Sprintf("\"%d.%d\",", lastEntry.Amount/100, lastEntry.Amount%100)
+		amountString = fmt.Sprintf("%d.%d,", lastEntry.Amount/100, lastEntry.Amount%100)
 		sigolo.Info("    (%s)", amountString)
 	}
 
