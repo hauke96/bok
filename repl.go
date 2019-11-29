@@ -78,46 +78,20 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 
 	// TODO Maybe reuse a lot of code here
 
-	fmt.Print("  Date: ")
-	scanner.Scan()
-	dateString = scanner.Text()
-	if lastEntry != nil && len(dateString) == 0 {
-		dateString = lastEntry.Date.Format("2006-01-02")
-		sigolo.Info("    (%s)", dateString)
-	}
+	dateString = askForData(scanner, "Date", lastEntry.Date.Format("2006-01-02"))
 
-	fmt.Print("  Amount: ")
-	scanner.Scan()
-	amountString = scanner.Text()
-	if lastEntry != nil && len(amountString) == 0 {
-		amountString = fmt.Sprintf("%d.%d,", lastEntry.Amount/100, lastEntry.Amount%100)
-		sigolo.Info("    (%s)", amountString)
-	}
+	amountString = askForData(scanner, "Amounnt", fmt.Sprintf("%d.%d", lastEntry.Amount/100, lastEntry.Amount%100))
 
-	fmt.Print("  Description: ")
-	scanner.Scan()
-	description = scanner.Text()
-	if lastEntry != nil && len(description) == 0 {
-		description = lastEntry.Note
-		sigolo.Info("    (%s)", description)
-	}
+	description = askForData(scanner, "Description", lastEntry.Note)
 
-	fmt.Print("  Category: ")
-	scanner.Scan()
-	category = scanner.Text()
-	if lastEntry != nil && len(category) == 0 {
-		category = lastEntry.Category
-		sigolo.Info("    (%s)", category)
-	}
+	category = askForData(scanner, "Category", lastEntry.Category)
 
 	// Convert strings to right type
-
 	amountString = strings.ReplaceAll(amountString, ",", ".")
 	amountFloat, err := strconv.ParseFloat(amountString, 64)
 	if err != nil {
 		return err
 	}
-
 	amount := int(amountFloat * 100.0)
 
 	// Currently only the "yyyy-mm-dd" format is supported
@@ -129,4 +103,19 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	store.AddEntry(amount, date, description, category)
 
 	return nil
+}
+
+// askForData scans for input from the user. If no input is given, the fallback value is returned
+func askForData(scanner *bufio.Scanner, text, fallback string) string {
+	fmt.Printf("  %s (%s): ", text, fallback)
+
+	scanner.Scan()
+	input := scanner.Text()
+
+	if len(fallback) != 0 && len(input) == 0 {
+		input = fallback
+		sigolo.Info("    (%s)", input)
+	}
+
+	return input
 }
