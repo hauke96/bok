@@ -41,6 +41,18 @@ func (s *Store) AddEntry(amount int, date time.Time, description string, categor
 	sigolo.Debug("Added entry [%d, %s, '%s', '%s']", amount, date, description, category)
 }
 
+func (s *Store) HasEntry(amount int, date time.Time, description string, category string) bool {
+	for _, e := range s.Entries {
+		if e.Amount == amount &&
+			e.Date == date &&
+			e.Note == description &&
+			e.Category == category {
+			return true
+		}
+	}
+	return false
+}
+
 // SaveStore will save the store to its location on disk. This will also set the
 // dirty-flag back to "false".
 func (s *Store) SaveStore() {

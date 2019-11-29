@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -98,6 +99,10 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	date, err := time.Parse("2006-01-02", dateString)
 	if err != nil {
 		return err
+	}
+
+	if store.HasEntry(amount, date, description, category) {
+		return errors.New("Entry already exists")
 	}
 
 	store.AddEntry(amount, date, description, category)
