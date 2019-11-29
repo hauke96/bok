@@ -48,6 +48,11 @@ func RunRepl(store *Store) {
 			case 'w': // -> write to disk
 				store.SaveStore()
 				sigolo.Info("Saved")
+			case 'e': // -> export
+				err := runExportRepl(scanner, store)
+				if err != nil {
+					sigolo.Info("Error adding entry: " + err.Error())
+				}
 			default: // -> unknown command
 				sigolo.Info("Unknown command '%c' at pos %d", cmd, i)
 			}
@@ -76,8 +81,6 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	}
 
 	sigolo.Info("Add new entry:")
-
-	// TODO Maybe reuse a lot of code here
 
 	dateString = askForData(scanner, "Date", lastEntry.Date.Format("2006-01-02"))
 
@@ -110,9 +113,28 @@ func replAddEntry(scanner *bufio.Scanner, store *Store) error {
 	return nil
 }
 
-// askForData scans for input from the user. If no input is given, the fallback value is returned
+// runExportRepl asks for the format to export and then writes the store in
+// that format to disk.
+func runExportRepl(scanner *bufio.Scanner, store *Store) error {
+	sigolo.Info("Export store:")
+
+	formatString := askForData(scanner, "Format", "csv")
+
+	datePrefixString := askForData(scanner, "Date prefix", "")
+
+	fileString := askForData(scanner, "File", "exported_"+datePrefixString)
+
+	return export(store.filterByDatePrefix(datePrefixString), formatString, fileString)
+}
+
+// askForData scans for input from the user. If no input is given, the fallback
+// value is returned.
 func askForData(scanner *bufio.Scanner, text, fallback string) string {
-	fmt.Printf("  %s (%s): ", text, fallback)
+	if len(fallback) == 0 {
+		fmt.Printf("  %s: ", text)
+	} else {
+		fmt.Printf("  %s (%s): ", text, fallback)
+	}
 
 	scanner.Scan()
 	input := scanner.Text()

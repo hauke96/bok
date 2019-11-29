@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -70,6 +71,23 @@ func (s *Store) SaveStore() {
 	sigolo.FatalCheck(err)
 
 	s.Dirty = false
+}
+
+func (s *Store) filterByDatePrefix(prefix string) *Store {
+	var store = &Store{
+		Path:    s.Path + "_filtered.json",
+		Entries: make([]*Entry, 0),
+	}
+
+	for _, e := range s.Entries {
+		if strings.HasPrefix(e.Date.Format("2006-01-02"), prefix) {
+			store.AddEntry(e.Amount, e.Date, e.Note, e.Category)
+		}
+	}
+
+	sort.Slice(store.Entries, func(i, j int) bool { return store.Entries[i].Date.Before(store.Entries[j].Date) })
+
+	return store
 }
 
 // ReadStore reads the store from disk.
