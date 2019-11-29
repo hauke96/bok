@@ -44,10 +44,9 @@ func (s *Store) AddEntry(amount int, date time.Time, description string, categor
 
 func (s *Store) HasEntry(amount int, date time.Time, description string, category string) bool {
 	for _, e := range s.Entries {
+		// Only use amount and date
 		if e.Amount == amount &&
-			e.Date == date &&
-			e.Note == description &&
-			e.Category == category {
+			e.Date == date {
 			return true
 		}
 	}
